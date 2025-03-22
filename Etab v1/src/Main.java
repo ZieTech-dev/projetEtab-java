@@ -3,8 +3,15 @@ import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import java.text.ParseException;
 import java.util.List;
+import java.util.*;
 
 public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+    private static List<Commande> commandes = new ArrayList<>();
+    private static List<Boisson> boissons = new ArrayList<>();
+    private static List<Repas> repas = new ArrayList<>();
+    private static List<Supplement> supplements = new ArrayList<>();
+
     public static void main(String[] args) {
         Scanner scanner =new Scanner(System.in);
         Date timeNow = new Date();
@@ -29,7 +36,7 @@ public class Main {
                                  1: Gestion des élèves
                                  2: Gestion des professeurs
                                  3: Gestion des utilisateurs
-                                 4: Gestion des repas
+                                 4: Gestion des restaurations
                                  0: Quitter
                     """);
             System.out.printf("Date système : %s \n", formattedTime);
@@ -121,7 +128,40 @@ public class Main {
                     System.out.println("\nGestion des utilisateurs");
                     break;
                 case 4:
-                    System.out.println("\nGestion des Repas");
+                    System.out.println("\nGestion des Restauration");
+                    while (section) {
+                        System.out.println("""
+                            **************************************
+                            *         GESTION DU RESTAURANT        *
+                            **************************************
+            
+                            Menu :
+                            1: Gérer les Boissons
+                            2: Gérer les Repas
+                            3: Gérer les Suppléments
+                            4: Gérer les Commandes
+                            5: Retour
+                            0: Quitter
+                        """);
+
+                        choix = validEntrerInt(scanner, choix, 5);
+
+                        switch (choix) {
+                            case 1 -> gererBoissons();
+                            case 2 -> gererRepas();
+                            case 3 -> gererSupplements();
+                            case 4 -> gererCommandes();
+                            case 5 -> section = false;
+                            case 0 -> {
+                                System.out.println("🚪 Fermeture du programme...");
+                                section = false;
+                                running = false;
+
+                            }
+                            default -> System.out.println("❌ Choix invalide.");
+                        }
+                    }
+
                     break;
                 case 0:
                     System.out.println("\nFin 🖖\n");
@@ -358,6 +398,377 @@ public class Main {
             System.out.println("🆕 Dernier professeur ajouté : " + dernier.nom);
         }
     }
+
+    // Gestion des Boissons
+    private static void gererBoissons() {
+        System.out.println("1: Ajouter\n2: Supprimer\n3: Modifier\n4: Lister\n5: Obtenir le dernier");
+        int choix = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choix) {
+            case 1 -> ajouterBoisson();
+            case 2 -> supprimerBoisson();
+            case 3 -> modifierBoisson();
+            case 4 -> listerBoissons();
+            case 5 -> obtenirDerniereBoisson();
+            default -> System.out.println("❌ Choix invalide.");
+        }
+    }
+
+    // Gestion des Boissons
+    private static void gererRepas() {
+        System.out.println("1: Ajouter\n2: Supprimer\n3: Modifier\n4: Lister\n5: Obtenir le dernier");
+        int choix = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choix) {
+            case 1 -> ajouterRepas();
+            case 2 -> supprimerRepas();
+            case 3 -> modifierRepas();
+            case 4 -> listerRepas();
+            case 5 -> obtenirDerniereRepas();
+            default -> System.out.println("❌ Choix invalide.");
+        }
+    }
+
+    private static void ajouterBoisson() {
+        System.out.print("ID : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Nom : ");
+        String nom = scanner.nextLine();
+        System.out.print("Prix : ");
+        double prix = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Taille (petit/moyen/grand) : ");
+        String taille = scanner.nextLine();
+        System.out.print("Stock : ");
+        int stock = scanner.nextInt();
+        scanner.nextLine();
+
+        boissons.add(new Boisson(id, nom, prix, taille, stock));
+        System.out.println("✅ Boisson ajoutée : " + nom);
+    }
+
+    private static void ajouterRepas() {
+        System.out.print("ID : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Nom : ");
+        String nom = scanner.nextLine();
+        System.out.print("Description : ");
+        String description = scanner.nextLine();
+        System.out.print("Prix : ");
+        double prix = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Stock : ");
+        int stock = scanner.nextInt();
+        scanner.nextLine();
+
+        repas.add(new Repas(id, nom,description, prix, stock));
+        System.out.println("✅ Repas ajoutée : " + nom);
+    }
+
+    private static void listerBoissons() {
+        if (boissons.isEmpty()) {
+            System.out.println("❌ Aucune boisson enregistrée.");
+            return;
+        }
+        System.out.println("📚 Liste des boissons :");
+        for (Boisson boisson : boissons) {
+            System.out.println("ID: " + boisson.getId() + ", Nom: " + boisson.getNom() + ", Prix: " + boisson.getPrix() + ", Stock: " + boisson.getStock());
+        }
+    }
+    private static void listerRepas() {
+        if (repas.isEmpty()) {
+            System.out.println("❌ Aucun repas enregistrée.");
+            return;
+        }
+        System.out.println("📚 Liste des repas :");
+        for (Repas repas1 : repas) {
+            System.out.println("ID: " + repas1.getId() + ", Nom: " + repas1.getNom() + ", Prix: " + repas1.getPrix() + ", Stock: " + repas1.getStock());
+        }
+    }
+
+    private static void obtenirDerniereBoisson() {
+        if (boissons.isEmpty()) {
+            System.out.println("❌ Aucune boisson enregistrée.");
+            return;
+        }
+        Boisson derniere = boissons.get(boissons.size() - 1);
+        System.out.println("🆕 Dernière boisson ajoutée : " + derniere.getNom());
+    }
+    private static void obtenirDerniereRepas() {
+        if (repas.isEmpty()) {
+            System.out.println("❌ Aucune repas enregistrée.");
+            return;
+        }
+        Repas derniere = repas.get(repas.size() - 1);
+        System.out.println("🆕 Dernière repas ajoutée : " + derniere.getNom());
+    }
+
+    private static void supprimerBoisson() {
+        System.out.print("ID de la boisson à supprimer : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Boisson boisson : boissons) {
+            if (boisson.getId() == id) {
+                boissons.remove(boisson);
+                System.out.println("🗑️ Boisson supprimée : " + boisson.getNom());
+                return;
+            }
+        }
+        System.out.println("❌ Boisson non trouvée.");
+    }
+
+    private static void supprimerRepas() {
+        System.out.print("ID de la repas à supprimer : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Repas repas1 : repas) {
+            if (repas1.getId() == id) {
+                boissons.remove(repas1);
+                System.out.println("🗑️ repas supprimée : " + repas1.getNom());
+                return;
+            }
+        }
+        System.out.println("❌ repas non trouvée.");
+    }
+
+    private static void modifierBoisson() {
+        System.out.print("ID de la boisson à modifier : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Boisson boisson : boissons) {
+            if (boisson.getId() == id) {
+                System.out.print("Nouveau nom : ");
+                String nom = scanner.nextLine();
+                System.out.print("Nouveau prix : ");
+                double prix = scanner.nextDouble();
+                scanner.nextLine();
+                System.out.print("Nouvelle taille (petit/moyen/grand) : ");
+                String taille = scanner.nextLine();
+                System.out.print("Nouveau stock : ");
+                int stock = scanner.nextInt();
+                scanner.nextLine();
+
+                boisson.setNom(nom);
+                boisson.setPrix(prix);
+                boisson.setTaille(taille);
+                boisson.setStock(stock);
+                System.out.println("✅ Boisson mise à jour : " + nom);
+                return;
+            }
+        }
+        System.out.println("❌ Boisson non trouvée.");
+    }
+
+    private static void modifierRepas() {
+        System.out.print("ID de la repas à modifier : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Repas repas1 : repas) {
+            if (repas1.getId() == id) {
+                System.out.print("Nouveau nom : ");
+                String nom = scanner.nextLine();
+                System.out.print("Nouveau description : ");
+                String description = scanner.nextLine();
+                System.out.print("Nouveau prix : ");
+                double prix = scanner.nextDouble();
+                scanner.nextLine();
+
+                System.out.print("Nouveau stock : ");
+                int stock = scanner.nextInt();
+                scanner.nextLine();
+
+                repas1.setNom(nom);
+                repas1.setPrix(prix);
+                repas1.setDescription(description);
+                repas1.setStock(stock);
+                System.out.println("✅ Repas mise à jour : " + nom);
+                return;
+            }
+        }
+        System.out.println("❌ repas non trouvée.");
+    }
+    private static void gererSupplements() {
+        System.out.println("1: Ajouter\n2: Supprimer\n3: Modifier\n4: Lister\n5: Obtenir le dernier");
+        int choix = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choix) {
+            case 1 -> ajouterSupplement();
+            case 2 -> supprimerSupplement();
+            case 3 -> modifierSupplement();
+            case 4 -> listerSupplements();
+            case 5 -> obtenirDernierSupplement();
+            default -> System.out.println("❌ Choix invalide.");
+        }
+    }
+
+    private static void ajouterSupplement() {
+        System.out.print("ID : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Nom : ");
+        String nom = scanner.nextLine();
+        System.out.print("Prix : ");
+        double prix = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.print("Stock : ");
+        int stock = scanner.nextInt();
+        scanner.nextLine();
+
+        supplements.add(new Supplement(id, nom, prix, stock));
+        System.out.println("✅ Supplément ajouté : " + nom);
+    }
+
+    private static void supprimerSupplement() {
+        System.out.print("ID du supplément à supprimer : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Supplement supplement : supplements) {
+            if (supplement.getId() == id) {
+                supplements.remove(supplement);
+                System.out.println("🗑️ Supplément supprimé : " + supplement.getNom());
+                return;
+            }
+        }
+        System.out.println("❌ Supplément non trouvé.");
+    }
+
+    private static void modifierSupplement() {
+        System.out.print("ID du supplément à modifier : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Supplement supplement : supplements) {
+            if (supplement.getId() == id) {
+                System.out.print("Nouveau nom : ");
+                String nom = scanner.nextLine();
+                System.out.print("Nouveau prix : ");
+                double prix = scanner.nextDouble();
+                scanner.nextLine();
+                System.out.print("Nouveau stock : ");
+                int stock = scanner.nextInt();
+                scanner.nextLine();
+
+                supplement.setNom(nom);
+                supplement.setPrix(prix);
+                supplement.mettreAJourStock(stock);
+                System.out.println("✅ Supplément mis à jour : " + nom);
+                return;
+            }
+        }
+        System.out.println("❌ Supplément non trouvé.");
+    }
+
+    private static void listerSupplements() {
+        if (supplements.isEmpty()) {
+            System.out.println("❌ Aucun supplément enregistré.");
+            return;
+        }
+        System.out.println("📚 Liste des suppléments :");
+        for (Supplement supplement : supplements) {
+            System.out.println("ID: " + supplement.getId() + ", Nom: " + supplement.getNom() + ", Prix: " + supplement.getPrix() + ", Stock: " + supplement.getStock());
+        }
+    }
+
+    private static void obtenirDernierSupplement() {
+        if (supplements.isEmpty()) {
+            System.out.println("❌ Aucun supplément enregistré.");
+            return;
+        }
+        Supplement dernier = supplements.get(supplements.size() - 1);
+        System.out.println("🆕 Dernier supplément ajouté : " + dernier.getNom());
+    }
+
+    // Gestion des Commandes
+    private static void gererCommandes() {
+        System.out.println("1: Ajouter\n2: Supprimer\n3: Modifier\n4: Lister\n5: Obtenir la dernière");
+        int choix = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choix) {
+            case 1 -> ajouterCommande();
+            case 2 -> supprimerCommande();
+            case 3 -> modifierCommande();
+            case 4 -> listerCommandes();
+            case 5 -> obtenirDerniereCommande();
+            default -> System.out.println("❌ Choix invalide.");
+        }
+    }
+
+    private static void ajouterCommande() {
+        System.out.print("ID : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        Date dateCommande = new Date();
+        System.out.print("Statut (En attente/Confirmée/Préparation/Prête/Livrée) : ");
+        String statut = scanner.nextLine();
+
+        commandes.add(new Commande(id, dateCommande, statut));
+        System.out.println("✅ Commande ajoutée avec ID : " + id);
+    }
+
+    private static void supprimerCommande() {
+        System.out.print("ID de la commande à supprimer : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Commande commande : commandes) {
+            if (commande.getId() == id) {
+                commandes.remove(commande);
+                System.out.println("🗑️ Commande supprimée avec ID : " + id);
+                return;
+            }
+        }
+        System.out.println("❌ Commande non trouvée.");
+    }
+
+    private static void modifierCommande() {
+        System.out.print("ID de la commande à modifier : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Commande commande : commandes) {
+            if (commande.getId() == id) {
+                System.out.print("Nouveau statut : ");
+                String statut = scanner.nextLine();
+                commande.changerStatut(statut);
+                System.out.println("✅ Commande mise à jour avec ID : " + id);
+                return;
+            }
+        }
+        System.out.println("❌ Commande non trouvée.");
+    }
+
+    private static void listerCommandes() {
+        if (commandes.isEmpty()) {
+            System.out.println("❌ Aucune commande enregistrée.");
+            return;
+        }
+        System.out.println("📚 Liste des commandes :");
+        for (Commande commande : commandes) {
+            System.out.println("ID: " + commande.getId() + ", Date: " + commande.getDateCommande() + ", Statut: " + commande.getStatut() + ", Total: " + commande.calculerTotal());
+        }
+    }
+
+    private static void obtenirDerniereCommande() {
+        if (commandes.isEmpty()) {
+            System.out.println("❌ Aucune commande enregistrée.");
+            return;
+        }
+        Commande derniere = commandes.get(commandes.size() - 1);
+        System.out.println("🆕 Dernière commande ajoutée avec ID : " + derniere.getId());
+    }
+
+
 
 
 }

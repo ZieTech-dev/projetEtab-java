@@ -31,4 +31,15 @@ public class Commande {
         this.statut = nouveauStatut;
         System.out.println("✅ Statut de la commande mis à jour en : " + nouveauStatut);
     }
+    public int getId() {
+        return this.id;
+    }
+
+    public Date getDateCommande() {
+        return this.dateCommande;
+    }
+
+    public String getStatut() {
+        return this.statut;
+    }
 }

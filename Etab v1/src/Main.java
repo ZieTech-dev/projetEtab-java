@@ -29,11 +29,12 @@ public class Main {
                                  1: Gestion des élèves
                                  2: Gestion des professeurs
                                  3: Gestion des utilisateurs
+                                 4: Gestion des repas
                                  0: Quitter
                     """);
             System.out.printf("Date système : %s \n", formattedTime);
 
-            choix = validEntrerInt(scanner, choix, 3);
+            choix = validEntrerInt(scanner, choix, 4);
 
             System.out.printf("vous avez choisi la reponse \"%d\"", choix);
             boolean section = true;
@@ -83,7 +84,7 @@ public class Main {
                     while (section) {
                         System.out.println("""
                         ******************************************************
-                        *                    GESTION DES professeur              *
+                        *                GESTION DES professeur              *
                         ******************************************************
     
                             Menu :
@@ -118,6 +119,9 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("\nGestion des utilisateurs");
+                    break;
+                case 4:
+                    System.out.println("\nGestion des Repas");
                     break;
                 case 0:
                     System.out.println("\nFin 🖖\n");

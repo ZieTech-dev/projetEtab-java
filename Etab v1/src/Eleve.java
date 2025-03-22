@@ -58,4 +58,9 @@ public class Eleve extends Personne {
         System.out.println("❌ Élève avec ID " + id + " non trouvé !");
         return false;
     }
+
+    // 🔹 Obtenir la liste des élèves
+    public static List<Eleve> getListeEleves() {
+        return new ArrayList<>(eleves);
+    }
 }

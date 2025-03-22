@@ -1,6 +1,8 @@
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
+import java.text.ParseException;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -37,6 +39,44 @@ public class Main {
             switch (choix) {
                 case 1:
                     System.out.println("\nGestion des élèves");
+                    boolean section = true;
+                    while (section) {
+                        System.out.println("""
+                        ******************************************************
+                        *                    GESTION DES ELEVES              *
+                        ******************************************************
+    
+                            Menu :
+                                1: Ajouter un élève
+                                2: Supprimer un élève
+                                3: Modifier les informations de l'élève
+                                4: Lister les élèves
+                                5: Obtenir le dernier élève ajouté
+                                6: Retour
+                                0: Quitter
+                        """);
+
+                        choix = validEntrerInt(scanner, choix, 6);
+
+                        switch (choix) {
+                            case 1 -> ajouterEleve(scanner);
+                            case 2 -> supprimerEleve(scanner);
+                            case 3 -> modifierEleve(scanner);
+                            case 4 -> Eleve.lister();
+                            case 5 -> obtenirDernierEleve();
+                            case 6 -> section = false;
+                            case 0 -> {
+                                System.out.println("🚪 Fermeture du programme...");
+                                section = false;
+                                running = false;
+
+                            }
+                            default -> System.out.println("❌ Choix invalide.");
+                        }
+                    }
+
+
+
                     break;
                 case 2:
                     System.out.println("\nGestion des professeurs");
@@ -120,4 +160,85 @@ public class Main {
 
 
     }
+
+    // 🔹 Fonction pour ajouter un élève
+    public static void ajouterEleve(Scanner scanner) {
+        System.out.println("🔹 Ajout d'un élève");
+        System.out.print("ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Nom: ");
+        String nom = scanner.nextLine();
+
+        System.out.print("Ville: ");
+        String ville = scanner.nextLine();
+
+        System.out.print("Date de naissance (dd/MM/yyyy): ");
+        Date dateNaissance = saisirDate(scanner);
+
+        System.out.print("Classe: ");
+        String classe = scanner.nextLine();
+
+        Eleve eleve = new Eleve(id, nom, ville, dateNaissance, classe);
+        Eleve.ajouter(eleve);
+    }
+
+    // 🔹 Fonction pour supprimer un élève
+    public static void supprimerEleve(Scanner scanner) {
+        System.out.print("ID de l'élève à supprimer : ");
+        int id = scanner.nextInt();
+        Eleve.supprimer(id);
+    }
+
+    // 🔹 Fonction pour modifier un élève
+    public static void modifierEleve(Scanner scanner) {
+        Eleve.lister();
+        System.out.print("ID de l'élève à modifier : ");
+
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Nouveau nom : ");
+        String nom = scanner.nextLine();
+
+        System.out.print("Nouvelle ville : ");
+        String ville = scanner.nextLine();
+
+        System.out.print("Nouvelle date de naissance (dd/MM/yyyy): ");
+        Date dateNaissance = saisirDate(scanner);
+
+        System.out.print("Nouvelle classe : ");
+        String classe = scanner.nextLine();
+
+        Eleve eleve = new Eleve(id, nom, ville, dateNaissance, classe);
+        Eleve.mettreAJour(eleve);
+    }
+
+    // 🔹 Fonction pour obtenir le dernier élève ajouté
+    public static void obtenirDernierEleve() {
+        List<Eleve> eleves = Eleve.getListeEleves();
+        if (!eleves.isEmpty()) {
+            Eleve dernierEleve = eleves.get(eleves.size() - 1);
+            System.out.println("Dernier élève ajouté : " + dernierEleve);
+        } else {
+            System.out.println("❌ Aucun élève enregistré.");
+        }
+    }
+
+
+    // 🔹 Fonction utilitaire pour saisir une date
+    public static Date saisirDate(Scanner scanner) {
+        while (true) {
+            try {
+                String dateString = scanner.nextLine();
+                return new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
+            } catch (ParseException e) {
+                System.out.println("❌ Format de date invalide. Veuillez entrer la date au format jj/MM/yyyy.");
+            }
+        }
+    }
+
+
+
 }

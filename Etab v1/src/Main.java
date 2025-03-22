@@ -36,10 +36,10 @@ public class Main {
             choix = validEntrerInt(scanner, choix, 3);
 
             System.out.printf("vous avez choisi la reponse \"%d\"", choix);
+            boolean section = true;
             switch (choix) {
                 case 1:
                     System.out.println("\nGestion des élèves");
-                    boolean section = true;
                     while (section) {
                         System.out.println("""
                         ******************************************************
@@ -79,7 +79,42 @@ public class Main {
 
                     break;
                 case 2:
-                    System.out.println("\nGestion des professeurs");
+                    System.out.println("\nGestion des professeur");
+                    while (section) {
+                        System.out.println("""
+                        ******************************************************
+                        *                    GESTION DES professeur              *
+                        ******************************************************
+    
+                            Menu :
+                                1: Ajouter un professeur
+                                2: Supprimer un professeur
+                                3: Modifier les informations du professeur
+                                4: Lister les professeur
+                                5: Obtenir le dernier élève professeur
+                                6: Retour
+                                0: Quitter
+                        """);
+
+                        choix = validEntrerInt(scanner, choix, 6);
+
+                        switch (choix) {
+                            case 1 -> ajouterProfeseur(scanner);
+                            case 2 -> supprimerProfesseur(scanner);
+                            case 3 -> modifierProfesseur(scanner);
+                            case 4 -> Professeur.lister();
+                            case 5 -> obtenirDernierProfesseur();
+                            case 6 -> section = false;
+                            case 0 -> {
+                                System.out.println("🚪 Fermeture du programme...");
+                                section = false;
+                                running = false;
+
+                            }
+                            default -> System.out.println("❌ Choix invalide.");
+                        }
+                    }
+
                     break;
                 case 3:
                     System.out.println("\nGestion des utilisateurs");
@@ -239,6 +274,86 @@ public class Main {
         }
     }
 
+    // Fonction pour ajouter un professeur
+    public static void ajouterProfeseur(Scanner scanner) {
+        System.out.println("📝 Entrez les informations du professeur :");
+        System.out.print("ID : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Nom : ");
+        String nom = scanner.nextLine();
+
+        System.out.print("Ville : ");
+        String ville = scanner.nextLine();
+
+        System.out.print("Date de naissance (dd/MM/yyyy) : ");
+        String dateStr = scanner.nextLine();
+        Date dateNaissance = null;
+        try {
+            dateNaissance = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+        } catch (ParseException e) {
+            System.out.println("❌ Format de date invalide.");
+            return;
+        }
+
+        System.out.print("Vacant (true/false) : ");
+        boolean vacant = scanner.nextBoolean();
+
+        Professeur professeur = new Professeur(id, nom, ville, dateNaissance, vacant);
+        Professeur.ajouterProf(professeur);
+    }
+
+    // Fonction pour supprimer un professeur
+    public static void supprimerProfesseur(Scanner scanner) {
+        System.out.print("🔍 Entrez l'ID du professeur à supprimer : ");
+        int id = scanner.nextInt();
+        if (!Professeur.supprimer(id)) {
+            System.out.println("❌ Échec de la suppression.");
+        }
+    }
+
+    // Fonction pour modifier les informations d'un professeur
+    public static void modifierProfesseur(Scanner scanner) {
+        System.out.print("🔍 Entrez l'ID du professeur à modifier : ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Nom : ");
+        String nom = scanner.nextLine();
+
+        System.out.print("Ville : ");
+        String ville = scanner.nextLine();
+
+        System.out.print("Date de naissance (dd/MM/yyyy) : ");
+        String dateStr = scanner.nextLine();
+        Date dateNaissance = null;
+        try {
+            dateNaissance = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+        } catch (ParseException e) {
+            System.out.println("❌ Format de date invalide.");
+            return;
+        }
+
+        System.out.print("Vacant (true/false) : ");
+        boolean vacant = scanner.nextBoolean();
+
+        Professeur professeur = new Professeur(id, nom, ville, dateNaissance, vacant);
+        if (!Professeur.mettreAJour(professeur)) {
+            System.out.println("❌ Échec de la mise à jour.");
+        }
+    }
+
+
+    // Fonction pour obtenir le dernier professeur ajouté
+    public static void obtenirDernierProfesseur() {
+        Professeur dernier = Professeur.obtenirDernierProfesseur();
+        if (dernier == null) {
+            System.out.println("❌ Aucun professeur enregistré.");
+        } else {
+            System.out.println("🆕 Dernier professeur ajouté : " + dernier.nom);
+        }
+    }
 
 
 }

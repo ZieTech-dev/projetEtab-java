@@ -59,6 +59,13 @@ public class Professeur extends Personne {
         return false;
     }
 
+    public static Professeur obtenirDernierProfesseur() {
+        if (professeurs.isEmpty()) {
+            return null;
+        }
+        return professeurs.get(professeurs.size() - 1);
+    }
+
     public static void main(String[] args) {
         Professeur p1 = new Professeur(1, "Dr. Koné", "Abidjan", new Date(80, 5, 10), true);
         Professeur p2 = new Professeur(2, "Mme. Coulibaly", "Yamoussoukro", new Date(75, 10, 20), false);

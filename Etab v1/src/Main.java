@@ -37,11 +37,12 @@ public class Main {
                                  2: Gestion des professeurs
                                  3: Gestion des utilisateurs
                                  4: Gestion des restaurations
+                                 5: Passer une commande
                                  0: Quitter
                     """);
             System.out.printf("Date système : %s \n", formattedTime);
 
-            choix = validEntrerInt(scanner, choix, 4);
+            choix = validEntrerInt(scanner, choix, 5);
 
             System.out.printf("vous avez choisi la reponse \"%d\"", choix);
             boolean section = true;
@@ -159,6 +160,96 @@ public class Main {
 
                             }
                             default -> System.out.println("❌ Choix invalide.");
+                        }
+                    }
+
+                    break;
+
+                case 5:
+//
+                    while (section) {
+                        System.out.println("""
+                            **************************************
+                            *           Menu de commande         *
+                            **************************************
+            
+                            Menu :
+                            1: passer une commande
+                            2: Afficher ma commande
+                            3:Retour
+                            0: Quitter
+                        """);
+
+                        choix = validEntrerInt(scanner, choix, 1);
+
+                        switch (choix) {
+                            case 1 :
+                                System.out.print("ID de la commande: ");
+                                int id = scanner.nextInt();
+                                scanner.nextLine();
+                                Date dateCommande = new Date();
+
+                                Commande commande = new Commande(id, dateCommande);
+
+                                commandes.add(commande);
+                                System.out.println("✅ Commande ajoutée avec ID : " + id);
+
+                                System.out.println("Repas disponibles : ");
+                                listerRepas();
+                                System.out.println("Choisissez un repas (ex:1 ou 2): ");
+                                int repasChoisi = scanner.nextInt();
+                                System.out.print("Quantité: ");
+                                int quantiteRepas = scanner.nextInt();
+                                for (Repas repas1 : repas) {
+                                    if (repas1.getId() == repasChoisi) {
+                                        commande.ajouterMenu(repas1, quantiteRepas);
+                                    }
+                                }
+
+                                System.out.println("Boisson disponibles : ");
+                                listerBoissons();
+                                System.out.println("Choisissez un boisson (ex:1 ou 2): ");
+                                int boissonChoisie  = scanner.nextInt();
+                                System.out.print("Quantité: ");
+                                int quantiteBoisson  = scanner.nextInt();
+                                for (Boisson boisson : boissons) {
+                                    if (boisson.getId() == boissonChoisie ) {
+                                        commande.ajouterBoisson(boisson, quantiteBoisson);
+                                    }
+                                }
+
+                                System.out.println("supplément  disponibles : ");
+                                listerSupplements();
+                                System.out.println("Choisissez un supplément  (ex:1 ou 2): ");
+                                int supplementChoisi   = scanner.nextInt();
+                                System.out.print("Quantité: ");
+                                int quantiteSupllement  = scanner.nextInt();
+                                for (Supplement supplement : supplements) {
+                                    if (supplement.getId() == supplementChoisi ) {
+                                        commande.ajouterSupplement(supplement, quantiteSupllement);
+                                    }
+                                }
+
+
+
+                                break;
+
+                            case 2:
+//                                commande.afficherCommande();
+                                break;
+
+                            case 3 :
+                                section = false;
+                                break;
+                            case 0 :
+                                System.out.println("🚪 Fermeture du programme...");
+                                section = false;
+                                running = false;
+                                break;
+
+
+                            default :
+                                System.out.println("❌ Choix invalide.");
                         }
                     }
 
@@ -709,10 +800,10 @@ public class Main {
         int id = scanner.nextInt();
         scanner.nextLine();
         Date dateCommande = new Date();
-        System.out.print("Statut (En attente/Confirmée/Préparation/Prête/Livrée) : ");
-        String statut = scanner.nextLine();
+//        System.out.print("Statut (En attente/Confirmée/Préparation/Prête/Livrée) : ");
+//        String statut = scanner.nextLine();
 
-        commandes.add(new Commande(id, dateCommande, statut));
+        commandes.add(new Commande(id, dateCommande));
         System.out.println("✅ Commande ajoutée avec ID : " + id);
     }
 
@@ -755,7 +846,8 @@ public class Main {
         }
         System.out.println("📚 Liste des commandes :");
         for (Commande commande : commandes) {
-            System.out.println("ID: " + commande.getId() + ", Date: " + commande.getDateCommande() + ", Statut: " + commande.getStatut() + ", Total: " + commande.calculerTotal());
+            System.out.println("ID: " + commande.getId() + ", Date: " + commande.getDateCommande() + ", Statut: " + commande.getStatut() + ", Total: " );
+//            System.out.println("ID: " + commande.getId() + ", Date: " + commande.getDateCommande() + ", Statut: " + commande.getStatut() + ", Total: " + commande.calculerTotal());
         }
     }
 
@@ -767,8 +859,5 @@ public class Main {
         Commande derniere = commandes.get(commandes.size() - 1);
         System.out.println("🆕 Dernière commande ajoutée avec ID : " + derniere.getId());
     }
-
-
-
 
 }
